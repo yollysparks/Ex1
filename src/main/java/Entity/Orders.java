@@ -37,16 +37,13 @@ public class Orders implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "orderID")
-    
+    @Column(name = "orderID") 
     private Integer orderID;
     @ManyToMany
     private List<Customer> customers;
-    
-    
-    
-    
-    
+    @OneToMany(mappedBy = "order")
+    private List<Orderline> orderlines;
+  
     public Orders() {
     }
     

@@ -6,6 +6,8 @@
 package Facade;
 
 import Entity.Customer;
+import Entity.Itemtype;
+import Entity.Orderline;
 import Entity.Orders;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -18,11 +20,10 @@ import javax.persistence.Query;
  * @author felesiah
  */
 public class Customerfacade {
-    
-    public Customer createCustomer(){
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("com.mycompany_Ex1_jar_1.0-SNAPSHOTPU");
+    EntityManagerFactory emf = Persistence.createEntityManagerFactory("com.mycompany_Ex1_jar_1.0-SNAPSHOTPU");
         EntityManager em = emf.createEntityManager();
         
+    public Customer createCustomer(){     
         Customer cus = new Customer();
               
         cus.setName("Yolanda");
@@ -42,9 +43,7 @@ public class Customerfacade {
     return cus;
 }
      public List<Customer> findCustomer(){
-         
-         EntityManagerFactory emf = Persistence.createEntityManagerFactory("com.mycompany_Ex1_jar_1.0-SNAPSHOTPU");
-         EntityManager em = emf.createEntityManager();   
+    
          Query q = em.createNamedQuery("Customer.findByName");
          q.setParameter("name","Yolanda");
          List<Customer> cust = (List<Customer>)q.getResultList();  
@@ -53,9 +52,7 @@ public class Customerfacade {
     return cust;
  }
      public List<Customer> getAllCustomer(){
-         
-         EntityManagerFactory emf = Persistence.createEntityManagerFactory("com.mycompany_Ex1_jar_1.0-SNAPSHOTPU");
-         EntityManager em = emf.createEntityManager();   
+     
          Query q = em.createNamedQuery("Customer.findAll");
          List<Customer> cust = (List<Customer>)q.getResultList();  
          System.out.println(cust);
@@ -67,22 +64,46 @@ public class Customerfacade {
      } 
   public void CreateOrder(int id) {
  
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("com.mycompany_Ex1_jar_1.0-SNAPSHOTPU");
-        EntityManager em = emf.createEntityManager();
-       
         em.getTransaction().begin();
         List<Customer> cus = findCustomer();
-       
         Orders o = new Orders();
-       
         o.setOrderID(id);
         cus.get(0).addOrders(o);
-       
+       try{
         em.merge(cus.get(0));
         em.persist(o);
         em.getTransaction().commit();
+       }finally{
         em.close();
- 
+       }
+    }
+  
+   public void createOrderLine(int quanity, Orders order, Itemtype item) {
+        try{
+            
+        Orderline od = new Orderline();
+        od.setItems(item);
+        od.setOrder(order);
+        od.setQuantity(quanity);
+        
+            em.getTransaction().begin();
+            em.persist(od); 
+            em.getTransaction().commit();
+            } finally {
+            em.close();
+       
+    }
+   }
+  
+  
+   public double findTotalPrice(Orders order) {
+        Query query = em.createQuery("SELECT line FROM OrderLine line WHERE line.order.id = " + order.getOrderID());
+        List<Orderline> list = query.getResultList();
+        int sum = 0;
+        for(Orderline line : list) {
+            sum = line.getItems().getPrice() * line.getQuantity();
+        }
+        return (double) sum;
     }
  
 }

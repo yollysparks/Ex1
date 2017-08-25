@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -38,7 +39,29 @@ public class Orderline implements Serializable {
     private Integer id;
     @Column(name = "quantity")
     private Integer quantity;
+    
+    @ManyToOne
+    private Orders order; 
 
+    public Orders getOrder() {
+        return order;
+    }
+
+    public void setOrder(Orders order) {
+        this.order = order;
+    }
+    
+    @ManyToOne
+    private Itemtype items;
+
+    public Itemtype getItems() {
+        return items;
+    }
+
+    public void setItems(Itemtype items) {
+        this.items = items;
+    }
+    
     public Orderline() {
     }
 
