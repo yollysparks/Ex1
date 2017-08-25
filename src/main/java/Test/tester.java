@@ -25,6 +25,7 @@ public class tester {
         cf.createCustomer();
         cf.findCustomer();
         cf.getAllCustomer();
+        cf.CreateOrder(0);
   
         
         

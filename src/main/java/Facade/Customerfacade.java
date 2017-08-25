@@ -65,26 +65,24 @@ public class Customerfacade {
      
      
      } 
-     
-     
-     
-     
-     public Orders createOrders(){
-          EntityManagerFactory emf = Persistence.createEntityManagerFactory("com.mycompany_Ex1_jar_1.0-SNAPSHOTPU");
-          EntityManager em = emf.createEntityManager();
-        
-          Orders orders = new Orders ();
-        
-           orders.setOrderID(1);
-        try{
-            em.getTransaction().begin();
-            em.persist(orders); 
-            em.getTransaction().commit();
-            } finally {
-            em.close();
-            System.out.println(orders.getOrderID());
-     }
-     return orders;
-     
-     }     
+  public void CreateOrder(int id) {
+ 
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("com.mycompany_Ex1_jar_1.0-SNAPSHOTPU");
+        EntityManager em = emf.createEntityManager();
+       
+        em.getTransaction().begin();
+        List<Customer> cus = findCustomer();
+       
+        Orders o = new Orders();
+       
+        o.setOrderID(id);
+        cus.get(0).addOrders(o);
+       
+        em.merge(cus.get(0));
+        em.persist(o);
+        em.getTransaction().commit();
+        em.close();
+ 
+    }
+ 
 }
